@@ -28,6 +28,10 @@ Visit <a aria-label="heroui learn" href="https://v3.heroui.com/docs/native/getti
 
 Visit [https://v3.heroui.com/docs/native/getting-started](https://v3.heroui.com/docs/native/getting-started) to view the full documentation.
 
+### AdaptUI Design System
+
+HeroUI Native supports the [AdaptUI](https://www.figma.com/community/file/1108051488381095193/adaptui-v1-0) design system as an alternative styling option. See the [AdaptUI Documentation](./docs/adapt-ui.md) for supported components and usage instructions.
+
 ## Preview App
 
 Experience HeroUI Native components in action with our preview app! You can explore all components and their variants directly on your device.

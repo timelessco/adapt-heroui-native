@@ -168,6 +168,14 @@ export default function Layout() {
         <Stack.Screen name="components/toast" options={{ title: 'Toast' }} />
         <Stack.Screen name="themes/index" options={{ headerTitle: 'Themes' }} />
         <Stack.Screen
+          name="adapt-components/index"
+          options={{ headerTitle: 'Adapt Components' }}
+        />
+        <Stack.Screen
+          name="adapt-components/button"
+          options={{ title: 'Button (AdaptUI)' }}
+        />
+        <Stack.Screen
           name="showcases"
           options={{
             headerShown: false,

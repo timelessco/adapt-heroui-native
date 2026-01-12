@@ -1,0 +1,341 @@
+/**
+ * AdaptUI Design System Theme
+ *
+ * Structure:
+ * 1. Color Palette (primitives) - base colors with 50-900 scales
+ * 2. Semantic Tokens - component-specific tokens referencing palette
+ */
+
+@theme inline static {
+  /* ============================================
+   * COLOR PALETTE (Primitives)
+   * ============================================ */
+
+  /* Base/Gray Scale */
+  --color-adapt-base-50: #F8F8F8;
+  --color-adapt-base-100: #F3F3F3;
+  --color-adapt-base-200: #EDEDED;
+  --color-adapt-base-300: #E8E8E8;
+  --color-adapt-base-400: #E2E2E2;
+  --color-adapt-base-500: #C7C7C7;
+  --color-adapt-base-600: #707070;
+  --color-adapt-base-700: #525252;
+  --color-adapt-base-800: #383838;
+  --color-adapt-base-900: #171717;
+
+  /* Primary/Blue Scale */
+  --color-adapt-primary-50: #F5FAFF;
+  --color-adapt-primary-100: #EDF6FF;
+  --color-adapt-primary-200: #E1F0FF;
+  --color-adapt-primary-300: #CEE7FE;
+  --color-adapt-primary-400: #B7D9F8;
+  --color-adapt-primary-500: #5EB0EF;
+  --color-adapt-primary-600: #0091FF;
+  --color-adapt-primary-700: #0081F1;
+  --color-adapt-primary-800: #006ADC;
+  --color-adapt-primary-900: #00254D;
+
+  /* Secondary/Violet Scale */
+  --color-adapt-secondary-50: #FBFAFF;
+  --color-adapt-secondary-100: #F5F2FF;
+  --color-adapt-secondary-200: #EDE9FE;
+  --color-adapt-secondary-300: #E4DEFC;
+  --color-adapt-secondary-400: #D7CFF9;
+  --color-adapt-secondary-500: #AA99EC;
+  --color-adapt-secondary-600: #6E56CF;
+  --color-adapt-secondary-700: #644FC1;
+  --color-adapt-secondary-800: #5746AF;
+  --color-adapt-secondary-900: #20134B;
+
+  /* Success/Green Scale */
+  --color-adapt-success-50: #F2FCF5;
+  --color-adapt-success-100: #E9F9EE;
+  --color-adapt-success-200: #DDF3E4;
+  --color-adapt-success-300: #CCEBD7;
+  --color-adapt-success-400: #B4DFC4;
+  --color-adapt-success-500: #5BB98C;
+  --color-adapt-success-600: #30A46C;
+  --color-adapt-success-700: #299764;
+  --color-adapt-success-800: #18794E;
+  --color-adapt-success-900: #153226;
+
+  /* Danger/Red Scale */
+  --color-adapt-danger-50: #FFF8F8;
+  --color-adapt-danger-100: #FFEFEF;
+  --color-adapt-danger-200: #FFE5E5;
+  --color-adapt-danger-300: #FDD8D8;
+  --color-adapt-danger-400: #F9C6C6;
+  --color-adapt-danger-500: #EB9091;
+  --color-adapt-danger-600: #E5484D;
+  --color-adapt-danger-700: #DC3D43;
+  --color-adapt-danger-800: #CD2B31;
+  --color-adapt-danger-900: #381316;
+
+  /* Gray Scale (alias for base) */
+  --color-adapt-gray-50: #F8F8F8;
+  --color-adapt-gray-100: #F3F3F3;
+  --color-adapt-gray-200: #EDEDED;
+  --color-adapt-gray-300: #E8E8E8;
+  --color-adapt-gray-400: #E2E2E2;
+  --color-adapt-gray-500: #C7C7C7;
+  --color-adapt-gray-600: #707070;
+  --color-adapt-gray-700: #525252;
+  --color-adapt-gray-800: #383838;
+  --color-adapt-gray-900: #171717;
+
+  /* Gray Dark Scale */
+  --color-adapt-gray-dark-50: #1C1C1C;
+  --color-adapt-gray-dark-100: #232323;
+  --color-adapt-gray-dark-200: #282828;
+  --color-adapt-gray-dark-300: #2E2E2E;
+  --color-adapt-gray-dark-400: #343434;
+  --color-adapt-gray-dark-500: #505050;
+  --color-adapt-gray-dark-600: #707070;
+  --color-adapt-gray-dark-700: #7E7E7E;
+  --color-adapt-gray-dark-800: #A0A0A0;
+  --color-adapt-gray-dark-900: #EDEDED;
+
+  /* ============================================
+   * SEMANTIC TOKENS - BASE Intent
+   * ============================================ */
+
+  /* Base Solid - Uses high contrast (900) per Figma */
+  --color-adapt-base-solid: var(--color-adapt-base-900);
+  --color-adapt-base-solid-hover: var(--color-adapt-base-800);
+  --color-adapt-base-solid-active: var(--color-adapt-base-700);
+  --color-adapt-base-solid-focus: var(--color-adapt-base-900);
+  --color-adapt-base-solid-disabled: var(--color-adapt-base-100);
+  --color-adapt-base-solid-foreground: #FFFFFF;
+  --color-adapt-base-solid-foreground-disabled: var(--color-adapt-base-500);
+
+  /* Base Subtle */
+  --color-adapt-base-subtle: var(--color-adapt-base-100);
+  --color-adapt-base-subtle-hover: var(--color-adapt-base-200);
+  --color-adapt-base-subtle-active: var(--color-adapt-base-300);
+  --color-adapt-base-subtle-focus: var(--color-adapt-base-100);
+  --color-adapt-base-subtle-disabled: var(--color-adapt-base-100);
+  --color-adapt-base-subtle-foreground: var(--color-adapt-base-800);
+  --color-adapt-base-subtle-foreground-disabled: var(--color-adapt-base-500);
+
+  /* Base Outline */
+  --color-adapt-base-outline: #FFFFFF;
+  --color-adapt-base-outline-hover: #FFFFFF;
+  --color-adapt-base-outline-active: var(--color-adapt-base-300);
+  --color-adapt-base-outline-focus: #FFFFFF;
+  --color-adapt-base-outline-disabled: var(--color-adapt-base-100);
+  --color-adapt-base-outline-border: var(--color-adapt-base-400);
+  --color-adapt-base-outline-border-hover: var(--color-adapt-base-500);
+  --color-adapt-base-outline-border-active: var(--color-adapt-base-500);
+  --color-adapt-base-outline-border-disabled: var(--color-adapt-base-400);
+  --color-adapt-base-outline-foreground: var(--color-adapt-base-800);
+  --color-adapt-base-outline-foreground-disabled: var(--color-adapt-base-500);
+
+  /* Base Ghost */
+  --color-adapt-base-ghost: transparent;
+  --color-adapt-base-ghost-hover: var(--color-adapt-base-200);
+  --color-adapt-base-ghost-active: var(--color-adapt-base-300);
+  --color-adapt-base-ghost-focus: var(--color-adapt-base-100);
+  --color-adapt-base-ghost-disabled: transparent;
+  --color-adapt-base-ghost-foreground: var(--color-adapt-base-800);
+  --color-adapt-base-ghost-foreground-disabled: var(--color-adapt-base-500);
+
+  /* ============================================
+   * SEMANTIC TOKENS - PRIMARY Intent
+   * ============================================ */
+
+  /* Primary Solid */
+  --color-adapt-primary-solid: var(--color-adapt-primary-600);
+  --color-adapt-primary-solid-hover: var(--color-adapt-primary-700);
+  --color-adapt-primary-solid-active: var(--color-adapt-primary-800);
+  --color-adapt-primary-solid-focus: var(--color-adapt-primary-600);
+  --color-adapt-primary-solid-disabled: var(--color-adapt-primary-100);
+  --color-adapt-primary-solid-foreground: #FFFFFF;
+  --color-adapt-primary-solid-foreground-disabled: var(--color-adapt-primary-500);
+
+  /* Primary Subtle */
+  --color-adapt-primary-subtle: var(--color-adapt-primary-100);
+  --color-adapt-primary-subtle-hover: var(--color-adapt-primary-200);
+  --color-adapt-primary-subtle-active: var(--color-adapt-primary-300);
+  --color-adapt-primary-subtle-focus: var(--color-adapt-primary-100);
+  --color-adapt-primary-subtle-disabled: var(--color-adapt-primary-100);
+  --color-adapt-primary-subtle-foreground: var(--color-adapt-primary-800);
+  --color-adapt-primary-subtle-foreground-disabled: var(--color-adapt-primary-500);
+
+  /* Primary Outline */
+  --color-adapt-primary-outline: #FFFFFF;
+  --color-adapt-primary-outline-hover: #FFFFFF;
+  --color-adapt-primary-outline-active: var(--color-adapt-primary-300);
+  --color-adapt-primary-outline-focus: #FFFFFF;
+  --color-adapt-primary-outline-disabled: var(--color-adapt-primary-100);
+  --color-adapt-primary-outline-border: var(--color-adapt-primary-400);
+  --color-adapt-primary-outline-border-hover: var(--color-adapt-primary-500);
+  --color-adapt-primary-outline-border-active: var(--color-adapt-primary-500);
+  --color-adapt-primary-outline-border-disabled: var(--color-adapt-primary-400);
+  --color-adapt-primary-outline-foreground: var(--color-adapt-primary-800);
+  --color-adapt-primary-outline-foreground-disabled: var(--color-adapt-primary-500);
+
+  /* Primary Ghost */
+  --color-adapt-primary-ghost: transparent;
+  --color-adapt-primary-ghost-hover: var(--color-adapt-primary-200);
+  --color-adapt-primary-ghost-active: var(--color-adapt-primary-300);
+  --color-adapt-primary-ghost-focus: var(--color-adapt-primary-100);
+  --color-adapt-primary-ghost-disabled: transparent;
+  --color-adapt-primary-ghost-foreground: var(--color-adapt-primary-800);
+  --color-adapt-primary-ghost-foreground-disabled: var(--color-adapt-primary-500);
+
+  /* ============================================
+   * SEMANTIC TOKENS - SECONDARY Intent
+   * ============================================ */
+
+  /* Secondary Solid */
+  --color-adapt-secondary-solid: var(--color-adapt-secondary-600);
+  --color-adapt-secondary-solid-hover: var(--color-adapt-secondary-700);
+  --color-adapt-secondary-solid-active: var(--color-adapt-secondary-800);
+  --color-adapt-secondary-solid-focus: var(--color-adapt-secondary-600);
+  --color-adapt-secondary-solid-disabled: var(--color-adapt-secondary-100);
+  --color-adapt-secondary-solid-foreground: #FFFFFF;
+  --color-adapt-secondary-solid-foreground-disabled: var(--color-adapt-secondary-500);
+
+  /* Secondary Subtle */
+  --color-adapt-secondary-subtle: var(--color-adapt-secondary-100);
+  --color-adapt-secondary-subtle-hover: var(--color-adapt-secondary-200);
+  --color-adapt-secondary-subtle-active: var(--color-adapt-secondary-300);
+  --color-adapt-secondary-subtle-focus: var(--color-adapt-secondary-100);
+  --color-adapt-secondary-subtle-disabled: var(--color-adapt-secondary-100);
+  --color-adapt-secondary-subtle-foreground: var(--color-adapt-secondary-800);
+  --color-adapt-secondary-subtle-foreground-disabled: var(--color-adapt-secondary-500);
+
+  /* Secondary Outline */
+  --color-adapt-secondary-outline: #FFFFFF;
+  --color-adapt-secondary-outline-hover: #FFFFFF;
+  --color-adapt-secondary-outline-active: var(--color-adapt-secondary-300);
+  --color-adapt-secondary-outline-focus: #FFFFFF;
+  --color-adapt-secondary-outline-disabled: var(--color-adapt-secondary-100);
+  --color-adapt-secondary-outline-border: var(--color-adapt-secondary-400);
+  --color-adapt-secondary-outline-border-hover: var(--color-adapt-secondary-500);
+  --color-adapt-secondary-outline-border-active: var(--color-adapt-secondary-500);
+  --color-adapt-secondary-outline-border-disabled: var(--color-adapt-secondary-400);
+  --color-adapt-secondary-outline-foreground: var(--color-adapt-secondary-800);
+  --color-adapt-secondary-outline-foreground-disabled: var(--color-adapt-secondary-500);
+
+  /* Secondary Ghost */
+  --color-adapt-secondary-ghost: transparent;
+  --color-adapt-secondary-ghost-hover: var(--color-adapt-secondary-200);
+  --color-adapt-secondary-ghost-active: var(--color-adapt-secondary-300);
+  --color-adapt-secondary-ghost-focus: var(--color-adapt-secondary-100);
+  --color-adapt-secondary-ghost-disabled: transparent;
+  --color-adapt-secondary-ghost-foreground: var(--color-adapt-secondary-800);
+  --color-adapt-secondary-ghost-foreground-disabled: var(--color-adapt-secondary-500);
+
+  /* ============================================
+   * SEMANTIC TOKENS - SUCCESS Intent
+   * ============================================ */
+
+  /* Success Solid */
+  --color-adapt-success-solid: var(--color-adapt-success-600);
+  --color-adapt-success-solid-hover: var(--color-adapt-success-700);
+  --color-adapt-success-solid-active: var(--color-adapt-success-800);
+  --color-adapt-success-solid-focus: var(--color-adapt-success-600);
+  --color-adapt-success-solid-disabled: var(--color-adapt-success-100);
+  --color-adapt-success-solid-foreground: #FFFFFF;
+  --color-adapt-success-solid-foreground-disabled: var(--color-adapt-success-500);
+
+  /* Success Subtle */
+  --color-adapt-success-subtle: var(--color-adapt-success-100);
+  --color-adapt-success-subtle-hover: var(--color-adapt-success-200);
+  --color-adapt-success-subtle-active: var(--color-adapt-success-300);
+  --color-adapt-success-subtle-focus: var(--color-adapt-success-100);
+  --color-adapt-success-subtle-disabled: var(--color-adapt-success-100);
+  --color-adapt-success-subtle-foreground: var(--color-adapt-success-800);
+  --color-adapt-success-subtle-foreground-disabled: var(--color-adapt-success-500);
+
+  /* Success Outline */
+  --color-adapt-success-outline: #FFFFFF;
+  --color-adapt-success-outline-hover: #FFFFFF;
+  --color-adapt-success-outline-active: var(--color-adapt-success-300);
+  --color-adapt-success-outline-focus: #FFFFFF;
+  --color-adapt-success-outline-disabled: var(--color-adapt-success-100);
+  --color-adapt-success-outline-border: var(--color-adapt-success-400);
+  --color-adapt-success-outline-border-hover: var(--color-adapt-success-500);
+  --color-adapt-success-outline-border-active: var(--color-adapt-success-500);
+  --color-adapt-success-outline-border-disabled: var(--color-adapt-success-400);
+  --color-adapt-success-outline-foreground: var(--color-adapt-success-800);
+  --color-adapt-success-outline-foreground-disabled: var(--color-adapt-success-500);
+
+  /* Success Ghost */
+  --color-adapt-success-ghost: transparent;
+  --color-adapt-success-ghost-hover: var(--color-adapt-success-200);
+  --color-adapt-success-ghost-active: var(--color-adapt-success-300);
+  --color-adapt-success-ghost-focus: var(--color-adapt-success-100);
+  --color-adapt-success-ghost-disabled: transparent;
+  --color-adapt-success-ghost-foreground: var(--color-adapt-success-800);
+  --color-adapt-success-ghost-foreground-disabled: var(--color-adapt-success-500);
+
+  /* ============================================
+   * SEMANTIC TOKENS - DANGER Intent
+   * ============================================ */
+
+  /* Danger Solid */
+  --color-adapt-danger-solid: var(--color-adapt-danger-600);
+  --color-adapt-danger-solid-hover: var(--color-adapt-danger-700);
+  --color-adapt-danger-solid-active: var(--color-adapt-danger-800);
+  --color-adapt-danger-solid-focus: var(--color-adapt-danger-600);
+  --color-adapt-danger-solid-disabled: var(--color-adapt-danger-100);
+  --color-adapt-danger-solid-foreground: #FFFFFF;
+  --color-adapt-danger-solid-foreground-disabled: var(--color-adapt-danger-500);
+
+  /* Danger Subtle */
+  --color-adapt-danger-subtle: var(--color-adapt-danger-100);
+  --color-adapt-danger-subtle-hover: var(--color-adapt-danger-200);
+  --color-adapt-danger-subtle-active: var(--color-adapt-danger-300);
+  --color-adapt-danger-subtle-focus: var(--color-adapt-danger-100);
+  --color-adapt-danger-subtle-disabled: var(--color-adapt-danger-100);
+  --color-adapt-danger-subtle-foreground: var(--color-adapt-danger-800);
+  --color-adapt-danger-subtle-foreground-disabled: var(--color-adapt-danger-500);
+
+  /* Danger Outline */
+  --color-adapt-danger-outline: #FFFFFF;
+  --color-adapt-danger-outline-hover: #FFFFFF;
+  --color-adapt-danger-outline-active: var(--color-adapt-danger-300);
+  --color-adapt-danger-outline-focus: #FFFFFF;
+  --color-adapt-danger-outline-disabled: var(--color-adapt-danger-100);
+  --color-adapt-danger-outline-border: var(--color-adapt-danger-400);
+  --color-adapt-danger-outline-border-hover: var(--color-adapt-danger-500);
+  --color-adapt-danger-outline-border-active: var(--color-adapt-danger-500);
+  --color-adapt-danger-outline-border-disabled: var(--color-adapt-danger-400);
+  --color-adapt-danger-outline-foreground: var(--color-adapt-danger-800);
+  --color-adapt-danger-outline-foreground-disabled: var(--color-adapt-danger-500);
+
+  /* Danger Ghost */
+  --color-adapt-danger-ghost: transparent;
+  --color-adapt-danger-ghost-hover: var(--color-adapt-danger-200);
+  --color-adapt-danger-ghost-active: var(--color-adapt-danger-300);
+  --color-adapt-danger-ghost-focus: var(--color-adapt-danger-100);
+  --color-adapt-danger-ghost-disabled: transparent;
+  --color-adapt-danger-ghost-foreground: var(--color-adapt-danger-800);
+  --color-adapt-danger-ghost-foreground-disabled: var(--color-adapt-danger-500);
+
+  /* ============================================
+   * TEXT TOKENS
+   * ============================================ */
+  --color-adapt-text-light-high-contrast: #000000;
+  --color-adapt-text-light-base: var(--color-adapt-base-900);
+  --color-adapt-text-light-bold: var(--color-adapt-base-800);
+  --color-adapt-text-light-weak: var(--color-adapt-base-700);
+  --color-adapt-text-light-low-contrast: var(--color-adapt-base-600);
+
+  --color-adapt-text-dark-high-contrast: #FFFFFF;
+  --color-adapt-text-dark-base: var(--color-adapt-gray-dark-900);
+  --color-adapt-text-dark-bold: var(--color-adapt-gray-dark-800);
+  --color-adapt-text-dark-weak: var(--color-adapt-gray-dark-700);
+  --color-adapt-text-dark-low-contrast: var(--color-adapt-gray-dark-600);
+
+  /* ============================================
+   * FOCUS RING COLORS
+   * ============================================ */
+  --color-adapt-focus-base: var(--color-adapt-base-500);
+  --color-adapt-focus-primary: var(--color-adapt-primary-500);
+  --color-adapt-focus-secondary: var(--color-adapt-secondary-500);
+  --color-adapt-focus-success: var(--color-adapt-success-500);
+  --color-adapt-focus-danger: var(--color-adapt-danger-500);
+}
