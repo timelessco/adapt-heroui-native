@@ -4,8 +4,7 @@ import { useThemeColor, useToast } from 'heroui-native';
 import { useCallback, useEffect } from 'react';
 import { Image, Platform, StyleSheet, View } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
-import LogoDark from '../../../assets/logo-dark.png';
-import LogoLight from '../../../assets/logo-light.png';
+import Logo from '../../../assets/logo.png';
 import { ThemeToggle } from '../../components/theme-toggle';
 import { useAppTheme } from '../../contexts/app-theme-context';
 
@@ -34,13 +33,7 @@ export default function Layout() {
   }, [reducedMotion]);
 
   const _renderTitle = () => {
-    return (
-      <Image
-        source={isDark ? LogoLight : LogoDark}
-        style={styles.logo}
-        resizeMode="contain"
-      />
-    );
+    return <Image source={Logo} style={styles.logo} resizeMode="contain" />;
   };
 
   const _renderThemeToggle = useCallback(() => <ThemeToggle />, []);

@@ -15,7 +15,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Uniwind, useUniwind, withUniwind } from 'uniwind';
 import BG from '../../../../assets/images/paywall-showcase-bg.jpeg';
-import LogoDark from '../../../../assets/logo-dark.png';
+import Logo from '../../../../assets/logo.png';
 import { AppText } from '../../../components/app-text';
 import { StyledFormField } from '../../../components/showcases/paywall/styled-form-field';
 import { StyledRadio } from '../../../components/showcases/paywall/styled-radio';
@@ -72,7 +72,7 @@ export default function Paywall() {
               className="text-black"
             />
           </Pressable>
-          <Image source={LogoDark} style={styles.logo} contentFit="contain" />
+          <Image source={Logo} style={styles.logo} contentFit="contain" />
         </View>
         <AppText className="text-sm text-default font-medium text-center tracking-wider uppercase mt-3">
           Unlock premium features
