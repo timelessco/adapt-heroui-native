@@ -1,6 +1,7 @@
 // Components
 export * from './components/accordion';
 export * from './components/avatar';
+export * from './components/badge';
 export * from './components/bottom-sheet';
 export * from './components/button';
 export * from './components/card';

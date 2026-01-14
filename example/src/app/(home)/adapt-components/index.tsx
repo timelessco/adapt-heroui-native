@@ -16,6 +16,10 @@ type Component = {
 
 const components: Component[] = [
   {
+    title: 'Badge',
+    path: 'badge',
+  },
+  {
     title: 'Button',
     path: 'button',
   },
