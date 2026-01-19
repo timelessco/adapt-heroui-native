@@ -1,35 +1,35 @@
 {
   "expo": {
-    "name": "HeroUI Native",
-    "slug": "heroui-native",
-    "scheme": "herouinative",
+    "name": "Adapt-HeroUI Native",
+    "slug": "adapt-heroui-native",
+    "scheme": "adaptheroui",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.herouinative.ios",
+      "bundleIdentifier": "com.adaptheroui.ios",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.herouinative.android"
+      "package": "com.adaptheroui.android"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
+      "favicon": "./assets/icon.png",
       "bundler": "metro"
     },
     "plugins": [
@@ -41,15 +41,15 @@
         "origin": false
       },
       "eas": {
-        "projectId": "13560f7b-27d6-41e8-a677-0b4d06705e7e"
+        "projectId": "5e0dfdf3-bce4-4cbb-8951-346e0e7f1b66"
       }
     },
-    "owner": "heroui-inc",
+    "owner": "timelessco",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/13560f7b-27d6-41e8-a677-0b4d06705e7e"
+      "url": "https://u.expo.dev/5e0dfdf3-bce4-4cbb-8951-346e0e7f1b66"
     }
   }
 }

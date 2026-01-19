@@ -3,6 +3,7 @@ import { SafeAreaListener } from 'react-native-safe-area-context';
 import { Uniwind } from 'uniwind';
 import { PortalHost } from '../../primitives/portal';
 import { GlobalAnimationSettingsProvider } from '../animation-settings';
+import { DesignSystemProvider } from '../design-system';
 import { TextComponentProvider } from '../text-component/provider';
 import { ToastProvider } from '../toast/provider';
 import type { HeroUINativeProviderProps } from './types';
@@ -35,7 +36,7 @@ export const HeroUINativeProvider: React.FC<HeroUINativeProviderProps> = ({
   children,
   config = {},
 }) => {
-  const { textProps, toast, animation } = config;
+  const { textProps, toast, animation, designSystem } = config;
   const { ...toastProps } = toast || {};
 
   useEffect(() => {
@@ -59,14 +60,16 @@ export const HeroUINativeProvider: React.FC<HeroUINativeProviderProps> = ({
         Uniwind.updateInsets(insets);
       }}
     >
-      <GlobalAnimationSettingsProvider animation={animation}>
-        <TextComponentProvider value={{ textProps }}>
-          <ToastProvider {...toastProps}>
-            {children}
-            <PortalHost />
-          </ToastProvider>
-        </TextComponentProvider>
-      </GlobalAnimationSettingsProvider>
+      <DesignSystemProvider designSystem={designSystem}>
+        <GlobalAnimationSettingsProvider animation={animation}>
+          <TextComponentProvider value={{ textProps }}>
+            <ToastProvider {...toastProps}>
+              {children}
+              <PortalHost />
+            </ToastProvider>
+          </TextComponentProvider>
+        </GlobalAnimationSettingsProvider>
+      </DesignSystemProvider>
     </SafeAreaListener>
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   interpolateColor,
   useAnimatedStyle,
@@ -16,12 +16,17 @@ import {
   getIsAnimationDisabledValue,
 } from '../../helpers/utils/animation';
 import {
+  ADAPT_FOCUS_RING_WIDTH,
+  adaptInputAnimationColors,
+} from './text-field.adapt-styles';
+import {
   ANIMATION_DURATION,
   ANIMATION_EASING,
   ENTERING_ANIMATION_CONFIG,
   EXITING_ANIMATION_CONFIG,
 } from './text-field.constants';
 import type {
+  AdaptTextFieldAppearance,
   TextFieldDescriptionAnimation,
   TextFieldInputAnimation,
   TextFieldLabelAnimation,
@@ -129,13 +134,21 @@ export function useTextFieldDescriptionAnimation(options: {
 
 /**
  * Animation hook for TextField Input component
- * Handles background color and border color animations for focus/blur and error states
+ * Handles background color, border color, and outline (focus ring) animations
+ * for focus/blur and error states
  */
 export function useTextFieldInputAnimation(options: {
   animation: TextFieldInputAnimation | undefined;
   isInvalid: boolean;
+  isAdaptUI?: boolean;
+  appearance?: AdaptTextFieldAppearance;
 }) {
-  const { animation, isInvalid } = options;
+  const {
+    animation,
+    isInvalid,
+    isAdaptUI = false,
+    appearance = 'outline',
+  } = options;
 
   const [
     themeColorFieldBackground,
@@ -160,27 +173,98 @@ export function useTextFieldInputAnimation(options: {
     isAllAnimationsDisabled,
   });
 
-  // Background color animation
-  const backgroundColorValue = {
-    blur:
-      animationConfig?.backgroundColor?.value?.blur ??
-      themeColorFieldBackground,
-    focus:
-      animationConfig?.backgroundColor?.value?.focus ??
-      themeColorFieldFocusBackground,
-    error:
-      animationConfig?.backgroundColor?.value?.error ??
-      themeColorFieldBackground,
-  };
+  // Get default colors based on design system - memoized to prevent jank
+  const adaptColors = isAdaptUI ? adaptInputAnimationColors[appearance] : null;
 
-  // Border color animation
-  const borderColorValue = {
-    blur:
-      animationConfig?.borderColor?.value?.blur ?? themeColorFieldBlurBorder,
-    focus:
-      animationConfig?.borderColor?.value?.focus ?? themeColorFieldFocusBorder,
-    error: animationConfig?.borderColor?.value?.error ?? themeColorDanger,
-  };
+  // Background color animation - memoized for stable reference
+  const backgroundColorValue = useMemo(
+    () => ({
+      blur:
+        animationConfig?.backgroundColor?.value?.blur ??
+        (isAdaptUI
+          ? adaptColors?.backgroundColor.blur
+          : themeColorFieldBackground) ??
+        themeColorFieldBackground,
+      focus:
+        animationConfig?.backgroundColor?.value?.focus ??
+        (isAdaptUI
+          ? adaptColors?.backgroundColor.focus
+          : themeColorFieldFocusBackground) ??
+        themeColorFieldFocusBackground,
+      error:
+        animationConfig?.backgroundColor?.value?.error ??
+        (isAdaptUI
+          ? adaptColors?.backgroundColor.error
+          : themeColorFieldBackground) ??
+        themeColorFieldBackground,
+    }),
+    [
+      animationConfig?.backgroundColor?.value?.blur,
+      animationConfig?.backgroundColor?.value?.focus,
+      animationConfig?.backgroundColor?.value?.error,
+      isAdaptUI,
+      adaptColors?.backgroundColor.blur,
+      adaptColors?.backgroundColor.focus,
+      adaptColors?.backgroundColor.error,
+      themeColorFieldBackground,
+      themeColorFieldFocusBackground,
+    ]
+  );
+
+  // Border color animation - memoized for stable reference
+  const borderColorValue = useMemo(
+    () => ({
+      blur:
+        animationConfig?.borderColor?.value?.blur ??
+        (isAdaptUI
+          ? adaptColors?.borderColor.blur
+          : themeColorFieldBlurBorder) ??
+        themeColorFieldBlurBorder,
+      focus:
+        animationConfig?.borderColor?.value?.focus ??
+        (isAdaptUI
+          ? adaptColors?.borderColor.focus
+          : themeColorFieldFocusBorder) ??
+        themeColorFieldFocusBorder,
+      error:
+        animationConfig?.borderColor?.value?.error ??
+        (isAdaptUI ? adaptColors?.borderColor.error : themeColorDanger) ??
+        themeColorDanger,
+    }),
+    [
+      animationConfig?.borderColor?.value?.blur,
+      animationConfig?.borderColor?.value?.focus,
+      animationConfig?.borderColor?.value?.error,
+      isAdaptUI,
+      adaptColors?.borderColor.blur,
+      adaptColors?.borderColor.focus,
+      adaptColors?.borderColor.error,
+      themeColorFieldBlurBorder,
+      themeColorFieldFocusBorder,
+      themeColorDanger,
+    ]
+  );
+
+  // Outline color animation (focus ring) - AdaptUI only, memoized for stable reference
+  const outlineColorValue = useMemo(
+    () => ({
+      blur: isAdaptUI
+        ? (adaptColors?.outlineColor?.blur ?? 'rgba(0,0,0,0)')
+        : 'rgba(0,0,0,0)',
+      focus: isAdaptUI
+        ? (adaptColors?.outlineColor?.focus ?? 'rgba(0,0,0,0)')
+        : 'rgba(0,0,0,0)',
+      error: isAdaptUI
+        ? (adaptColors?.outlineColor?.error ?? 'rgba(0,0,0,0)')
+        : 'rgba(0,0,0,0)',
+    }),
+    [
+      isAdaptUI,
+      adaptColors?.outlineColor?.blur,
+      adaptColors?.outlineColor?.focus,
+      adaptColors?.outlineColor?.error,
+    ]
+  );
 
   // Focus/blur animation timing configuration
   const focusTimingConfig = getAnimationValueMergedConfig({
@@ -204,8 +288,9 @@ export function useTextFieldInputAnimation(options: {
 
   const focusProgress = useSharedValue(0);
   const errorProgress = useSharedValue(0);
-  const currentBgColor = useSharedValue(backgroundColorValue.blur);
-  const currentBorderColor = useSharedValue(borderColorValue.blur);
+  const currentBgColor = useSharedValue<string>(backgroundColorValue.blur);
+  const currentBorderColor = useSharedValue<string>(borderColorValue.blur);
+  const currentOutlineColor = useSharedValue<string>(outlineColorValue.blur);
 
   // Update error state when isInvalid changes
   useEffect(() => {
@@ -221,54 +306,99 @@ export function useTextFieldInputAnimation(options: {
   }, [isInvalid, errorProgress, isAnimationDisabledValue, errorTimingConfig]);
 
   const animatedContainerStyle = useAnimatedStyle(() => {
-    if (isInvalid) {
+    // Base style object for non-AdaptUI
+    const baseStyle: Record<string, unknown> = {};
+
+    // Use errorProgress shared value instead of isInvalid JS boolean
+    // to ensure worklet reacts to state changes on UI thread
+    const isErrorState = errorProgress.get() > 0;
+
+    if (isErrorState) {
       const errorBgColor = backgroundColorValue.error || currentBgColor.get();
       const errorBorderColor = borderColorValue.error;
+      const errorOutlineColor = outlineColorValue.error;
 
       if (isAnimationDisabledValue) {
-        return {
-          backgroundColor: errorBgColor,
-          borderColor: errorBorderColor,
-        };
+        baseStyle.backgroundColor = errorBgColor;
+        baseStyle.borderColor = errorBorderColor;
+        if (isAdaptUI) {
+          baseStyle.outlineColor = errorOutlineColor;
+          baseStyle.outlineWidth = 0; // No focus ring on error
+          baseStyle.outlineStyle = 'solid';
+        }
+        return baseStyle;
       }
 
-      return {
-        backgroundColor: interpolateColor(
+      baseStyle.backgroundColor = interpolateColor(
+        errorProgress.get(),
+        [0, 1],
+        [currentBgColor.get(), errorBgColor]
+      );
+      baseStyle.borderColor = interpolateColor(
+        errorProgress.get(),
+        [0, 1],
+        [currentBorderColor.get(), errorBorderColor]
+      );
+
+      if (isAdaptUI) {
+        baseStyle.outlineColor = interpolateColor(
           errorProgress.get(),
           [0, 1],
-          [currentBgColor.get(), errorBgColor]
-        ),
-        borderColor: interpolateColor(
-          errorProgress.get(),
-          [0, 1],
-          [currentBorderColor.get(), errorBorderColor]
-        ),
-      };
+          [currentOutlineColor.get(), errorOutlineColor]
+        );
+        // Animate outline width to 0 on error
+        const currentWidth =
+          focusProgress.get() > 0 ? ADAPT_FOCUS_RING_WIDTH : 0;
+        baseStyle.outlineWidth = currentWidth * (1 - errorProgress.get());
+        baseStyle.outlineStyle = 'solid';
+      }
+
+      return baseStyle;
     }
 
     if (isAnimationDisabledValue) {
-      return {
-        backgroundColor: focusProgress.get()
-          ? backgroundColorValue.focus
-          : backgroundColorValue.blur,
-        borderColor: focusProgress.get()
-          ? borderColorValue.focus
-          : borderColorValue.blur,
-      };
+      baseStyle.backgroundColor = focusProgress.get()
+        ? backgroundColorValue.focus
+        : backgroundColorValue.blur;
+      baseStyle.borderColor = focusProgress.get()
+        ? borderColorValue.focus
+        : borderColorValue.blur;
+
+      if (isAdaptUI) {
+        baseStyle.outlineColor = focusProgress.get()
+          ? outlineColorValue.focus
+          : outlineColorValue.blur;
+        baseStyle.outlineWidth = focusProgress.get()
+          ? ADAPT_FOCUS_RING_WIDTH
+          : 0;
+        baseStyle.outlineStyle = 'solid';
+      }
+
+      return baseStyle;
     }
 
-    return {
-      backgroundColor: interpolateColor(
+    baseStyle.backgroundColor = interpolateColor(
+      focusProgress.get(),
+      [0, 1],
+      [backgroundColorValue.blur, backgroundColorValue.focus]
+    );
+    baseStyle.borderColor = interpolateColor(
+      focusProgress.get(),
+      [0, 1],
+      [borderColorValue.blur, borderColorValue.focus]
+    );
+
+    if (isAdaptUI) {
+      baseStyle.outlineColor = interpolateColor(
         focusProgress.get(),
         [0, 1],
-        [backgroundColorValue.blur, backgroundColorValue.focus]
-      ),
-      borderColor: interpolateColor(
-        focusProgress.get(),
-        [0, 1],
-        [borderColorValue.blur, borderColorValue.focus]
-      ),
-    };
+        [outlineColorValue.blur, outlineColorValue.focus]
+      );
+      baseStyle.outlineWidth = focusProgress.get() * ADAPT_FOCUS_RING_WIDTH;
+      baseStyle.outlineStyle = 'solid';
+    }
+
+    return baseStyle;
   });
 
   const handleFocusAnimation = () => {
@@ -279,6 +409,7 @@ export function useTextFieldInputAnimation(options: {
     }
     currentBgColor.set(backgroundColorValue.focus);
     currentBorderColor.set(borderColorValue.focus);
+    currentOutlineColor.set(outlineColorValue.focus);
   };
 
   const handleBlurAnimation = () => {
@@ -289,6 +420,7 @@ export function useTextFieldInputAnimation(options: {
     }
     currentBgColor.set(backgroundColorValue.blur);
     currentBorderColor.set(borderColorValue.blur);
+    currentOutlineColor.set(outlineColorValue.blur);
   };
 
   return {

@@ -4,13 +4,17 @@ import { HeroText } from '../../helpers/components';
 import { colorKit, useThemeColor } from '../../helpers/theme';
 import type { PressableRef } from '../../helpers/types';
 import { childrenToString, createContext } from '../../helpers/utils';
+import { useEffectiveDesignSystem } from '../../providers/design-system';
 import { PressableFeedback } from '../pressable-feedback';
+import adaptButtonStyles, { adaptHoverColorMap } from './button.adapt-styles';
 import { DISPLAY_NAME } from './button.constants';
 import buttonStyles, { styleSheet } from './button.styles';
 import type {
+  AdaptButtonSize,
   ButtonContextValue,
   ButtonLabelProps,
   ButtonRootProps,
+  ButtonSize,
 } from './button.types';
 
 const [ButtonProvider, useButton] = createContext<ButtonContextValue>({
@@ -22,11 +26,14 @@ const [ButtonProvider, useButton] = createContext<ButtonContextValue>({
 const ButtonRoot = forwardRef<PressableRef, ButtonRootProps>((props, ref) => {
   const {
     children,
+    designSystem: designSystemProp,
     variant = 'primary',
+    appearance = 'solid',
+    intent = 'primary',
+    size = 'md',
     pressableFeedbackVariant = 'highlight',
     pressableFeedbackHighlightProps,
     pressableFeedbackRippleProps,
-    size = 'md',
     isIconOnly = false,
     isDisabled = false,
     className,
@@ -35,6 +42,10 @@ const ButtonRoot = forwardRef<PressableRef, ButtonRootProps>((props, ref) => {
     ...restProps
   } = props;
 
+  const designSystem = useEffectiveDesignSystem(designSystemProp);
+  const isAdaptUI = designSystem === 'adapt';
+
+  // HeroUI theme colors
   const [
     themeColorAccentHover,
     themeColorDefaultHover,
@@ -49,15 +60,46 @@ const ButtonRoot = forwardRef<PressableRef, ButtonRootProps>((props, ref) => {
 
   const stringifiedChildren = childrenToString(children);
 
-  const tvStyles = buttonStyles.root({
+  // Compute styles based on design system
+  const tvStyles = useMemo(() => {
+    if (isAdaptUI) {
+      return adaptButtonStyles.root({
+        appearance,
+        intent,
+        size: size as AdaptButtonSize,
+        isIconOnly,
+        isDisabled,
+        className,
+      });
+    }
+    return buttonStyles.root({
+      variant,
+      size: size as ButtonSize,
+      isIconOnly,
+      isDisabled,
+      className,
+    });
+  }, [
+    isAdaptUI,
+    appearance,
+    intent,
     variant,
     size,
     isIconOnly,
     isDisabled,
     className,
-  });
+  ]);
 
+  // Compute highlight color based on design system
   const highlightColorMap = useMemo(() => {
+    if (isAdaptUI) {
+      return (
+        adaptHoverColorMap[intent]?.[appearance] ??
+        adaptHoverColorMap.primary.solid
+      );
+    }
+
+    // HeroUI hover colors
     switch (variant) {
       case 'primary':
         return themeColorAccentHover;
@@ -73,6 +115,9 @@ const ButtonRoot = forwardRef<PressableRef, ButtonRootProps>((props, ref) => {
         return themeColorDangerSoftHover;
     }
   }, [
+    isAdaptUI,
+    intent,
+    appearance,
     variant,
     themeColorAccentHover,
     themeColorDefaultHover,
@@ -158,14 +203,24 @@ const ButtonRoot = forwardRef<PressableRef, ButtonRootProps>((props, ref) => {
     pressableFeedbackRippleProps?.animation,
   ]);
 
-  const contextValue = useMemo(
-    () => ({
-      size,
+  // Context value based on design system
+  const contextValue = useMemo<ButtonContextValue>(() => {
+    if (isAdaptUI) {
+      return {
+        designSystem: 'adapt',
+        size: size as AdaptButtonSize,
+        appearance,
+        intent,
+        isDisabled,
+      };
+    }
+    return {
+      designSystem: 'heroui',
+      size: size as ButtonSize,
       variant,
       isDisabled,
-    }),
-    [size, variant, isDisabled]
-  );
+    };
+  }, [isAdaptUI, size, appearance, intent, variant, isDisabled]);
 
   return (
     <ButtonProvider value={contextValue}>
@@ -205,13 +260,23 @@ const ButtonRoot = forwardRef<PressableRef, ButtonRootProps>((props, ref) => {
 const ButtonLabel = forwardRef<View, ButtonLabelProps>((props, ref) => {
   const { children, className, ...restProps } = props;
 
-  const { size, variant } = useButton();
+  const context = useButton();
 
-  const tvStyles = buttonStyles.label({
-    size,
-    variant,
-    className,
-  });
+  // Compute label styles based on design system
+  const tvStyles =
+    context.designSystem === 'adapt'
+      ? adaptButtonStyles.label({
+          size: context.size,
+          appearance: context.appearance,
+          intent: context.intent,
+          isDisabled: context.isDisabled,
+          className,
+        })
+      : buttonStyles.label({
+          size: context.size,
+          variant: context.variant,
+          className,
+        });
 
   return (
     <HeroText ref={ref} className={tvStyles} {...restProps}>

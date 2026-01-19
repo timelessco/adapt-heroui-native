@@ -1,6 +1,7 @@
 // Components
 export * from './components/accordion';
 export * from './components/avatar';
+export * from './components/badge';
 export * from './components/bottom-sheet';
 export * from './components/button';
 export * from './components/card';
@@ -28,6 +29,7 @@ export * from './components/toast';
 export * from './helpers/theme';
 
 // Provider
+export * from './providers/design-system';
 export * from './providers/hero-ui-native';
 export { useTextComponent } from './providers/text-component';
 export * from './providers/toast';

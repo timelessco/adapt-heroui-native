@@ -4,8 +4,7 @@ import { useThemeColor, useToast } from 'heroui-native';
 import { useCallback, useEffect } from 'react';
 import { Image, Platform, StyleSheet, View } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
-import LogoDark from '../../../assets/logo-dark.png';
-import LogoLight from '../../../assets/logo-light.png';
+import Logo from '../../../assets/logo.png';
 import { ThemeToggle } from '../../components/theme-toggle';
 import { useAppTheme } from '../../contexts/app-theme-context';
 
@@ -34,13 +33,7 @@ export default function Layout() {
   }, [reducedMotion]);
 
   const _renderTitle = () => {
-    return (
-      <Image
-        source={isDark ? LogoLight : LogoDark}
-        style={styles.logo}
-        resizeMode="contain"
-      />
-    );
+    return <Image source={Logo} style={styles.logo} resizeMode="contain" />;
   };
 
   const _renderThemeToggle = useCallback(() => <ThemeToggle />, []);
@@ -167,6 +160,18 @@ export default function Layout() {
         />
         <Stack.Screen name="components/toast" options={{ title: 'Toast' }} />
         <Stack.Screen name="themes/index" options={{ headerTitle: 'Themes' }} />
+        <Stack.Screen
+          name="adapt-components/index"
+          options={{ headerTitle: 'Adapt Components' }}
+        />
+        <Stack.Screen
+          name="adapt-components/button"
+          options={{ title: 'adapt/button' }}
+        />
+        <Stack.Screen
+          name="adapt-components/text-field"
+          options={{ title: 'adapt/text-field' }}
+        />
         <Stack.Screen
           name="showcases"
           options={{

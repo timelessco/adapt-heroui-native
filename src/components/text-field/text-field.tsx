@@ -11,7 +11,12 @@ import { HeroText } from '../../helpers/components';
 import { AnimationSettingsProvider } from '../../helpers/contexts/animation-settings-context';
 import type { TextRef, ViewRef } from '../../helpers/types/primitives';
 import { createContext } from '../../helpers/utils';
+import { useEffectiveDesignSystem } from '../../providers/design-system';
 import { ErrorView } from '../error-view';
+import adaptTextFieldStyles, {
+  adaptPlaceholderColors,
+  adaptStyleSheet,
+} from './text-field.adapt-styles';
 import {
   useTextFieldDescriptionAnimation,
   useTextFieldInputAnimation,
@@ -21,6 +26,8 @@ import {
 import { DISPLAY_NAME } from './text-field.constants';
 import textFieldStyles, { styleSheet } from './text-field.styles';
 import type {
+  AdaptTextFieldAppearance,
+  AdaptTextFieldSize,
   TextFieldContextValue,
   TextFieldDescriptionProps,
   TextFieldErrorMessageProps,
@@ -42,6 +49,9 @@ const TextFieldRoot = forwardRef<ViewRef, TextFieldRootProps>((props, ref) => {
   const {
     children,
     className,
+    designSystem: designSystemProp,
+    appearance = 'outline',
+    size = 'md',
     isDisabled = false,
     isInvalid = false,
     isRequired = false,
@@ -49,14 +59,38 @@ const TextFieldRoot = forwardRef<ViewRef, TextFieldRootProps>((props, ref) => {
     ...restProps
   } = props;
 
-  const tvStyles = textFieldStyles.root({ isDisabled, className });
+  const designSystem = useEffectiveDesignSystem(designSystemProp);
+  const isAdaptUI = designSystem === 'adapt';
+
+  // Compute styles based on design system
+  const tvStyles = useMemo(() => {
+    if (isAdaptUI) {
+      return adaptTextFieldStyles.root({ isDisabled, className });
+    }
+    return textFieldStyles.root({ isDisabled, className });
+  }, [isAdaptUI, isDisabled, className]);
 
   const { isAllAnimationsDisabled } = useTextFieldRootAnimation({ animation });
 
-  const contextValue = useMemo(
-    () => ({ isDisabled, isInvalid, isRequired }),
-    [isDisabled, isInvalid, isRequired]
-  );
+  // Context value based on design system
+  const contextValue = useMemo<TextFieldContextValue>(() => {
+    if (isAdaptUI) {
+      return {
+        designSystem: 'adapt',
+        appearance,
+        size,
+        isDisabled,
+        isInvalid,
+        isRequired,
+      };
+    }
+    return {
+      designSystem: 'heroui',
+      isDisabled,
+      isInvalid,
+      isRequired,
+    };
+  }, [isAdaptUI, appearance, size, isDisabled, isInvalid, isRequired]);
 
   const animationSettingsContextValue = useMemo(
     () => ({
@@ -89,16 +123,25 @@ const TextFieldLabel = forwardRef<TextRef, TextFieldLabelProps>(
       ...restProps
     } = props;
 
-    const {
-      isDisabled,
-      isInvalid: contextIsInvalid,
-      isRequired,
-    } = useTextField();
+    const context = useTextField();
+    const { isDisabled, isInvalid: contextIsInvalid, isRequired } = context;
+    const isAdaptUI = context.designSystem === 'adapt';
+    const size = isAdaptUI ? context.size : undefined;
 
     const isInvalid =
       localIsInvalid !== undefined ? localIsInvalid : contextIsInvalid;
 
-    const tvStyles = textFieldStyles.label({ isDisabled, isInvalid });
+    // Compute label styles based on design system
+    const tvStyles = useMemo(() => {
+      if (isAdaptUI) {
+        return adaptTextFieldStyles.label({
+          size,
+          isDisabled,
+          isInvalid,
+        });
+      }
+      return textFieldStyles.label({ isDisabled, isInvalid });
+    }, [isAdaptUI, size, isDisabled, isInvalid]);
 
     const textStyles = tvStyles.text({
       className: [className, classNames?.text],
@@ -143,23 +186,78 @@ const TextFieldInput = forwardRef<TextInputType, TextFieldInputProps>(
       ...restProps
     } = props;
 
-    const { isInvalid: contextIsInvalid } = useTextField();
+    const context = useTextField();
+    const { isDisabled, isInvalid: contextIsInvalid } = context;
+    const isAdaptUI = context.designSystem === 'adapt';
 
     const isInvalid =
       localIsInvalid !== undefined ? localIsInvalid : contextIsInvalid;
 
-    const inputClassName = textFieldStyles.input({
-      className,
-    });
+    // Get appearance and size for AdaptUI
+    const appearance: AdaptTextFieldAppearance = isAdaptUI
+      ? context.appearance
+      : 'outline';
+    const size: AdaptTextFieldSize = isAdaptUI ? context.size : 'md';
 
-    const placeholderColorClassName = textFieldStyles.placeholderTextColor({
-      className: placeholderColorClassNameProp,
-    });
+    // Compute input styles based on design system
+    const inputClassName = useMemo(() => {
+      if (isAdaptUI) {
+        return adaptTextFieldStyles.input({
+          appearance,
+          size,
+          isDisabled,
+          className,
+        });
+      }
+      return textFieldStyles.input({
+        className,
+      });
+    }, [isAdaptUI, appearance, size, isDisabled, className]);
 
-    const selectionColorClassName = textFieldStyles.inputSelectionColor({
+    // Compute placeholder color based on design system
+    // AdaptUI uses: default (#707070), disabled (#C7C7C7), ghost error (#E5484D red)
+    // Placeholder color does NOT change on focus
+    const placeholderColorClassName = useMemo(() => {
+      if (isAdaptUI) {
+        // If custom className provided, use it
+        if (placeholderColorClassNameProp) {
+          return placeholderColorClassNameProp;
+        }
+        // Handle disabled state first
+        if (isDisabled) {
+          return adaptPlaceholderColors.disabled;
+        }
+        // Handle ghost error state (red placeholder)
+        if (appearance === 'ghost' && isInvalid) {
+          return adaptPlaceholderColors.ghostError;
+        }
+        // Default state (same for focus and blur)
+        return adaptPlaceholderColors.default;
+      }
+      return textFieldStyles.placeholderTextColor({
+        className: placeholderColorClassNameProp,
+      });
+    }, [
+      isAdaptUI,
+      isDisabled,
       isInvalid,
-      className: selectionColorClassNameProp,
-    });
+      appearance,
+      placeholderColorClassNameProp,
+    ]);
+
+    // Compute selection color based on design system
+    const selectionColorClassName = useMemo(() => {
+      if (isAdaptUI) {
+        return adaptTextFieldStyles.inputSelectionColor({
+          isInvalid,
+          className: selectionColorClassNameProp,
+        });
+      }
+      return textFieldStyles.inputSelectionColor({
+        isInvalid,
+        className: selectionColorClassNameProp,
+      });
+    }, [isAdaptUI, isInvalid, selectionColorClassNameProp]);
 
     const {
       animatedContainerStyle,
@@ -168,11 +266,33 @@ const TextFieldInput = forwardRef<TextInputType, TextFieldInputProps>(
     } = useTextFieldInputAnimation({
       animation,
       isInvalid,
+      isAdaptUI,
+      appearance,
     });
 
-    const containerStyle = isAnimatedStyleActive
-      ? [animatedContainerStyle, styleSheet.borderCurve, style]
-      : [styleSheet.borderCurve, style];
+    // Use appropriate stylesheet based on design system
+    // Don't apply borderCurve to underline/ghost appearances
+    const needsBorderCurve =
+      appearance !== 'underline' && appearance !== 'ghost';
+    const containerStyle = useMemo(() => {
+      const baseStyles = isAdaptUI
+        ? [
+            needsBorderCurve && adaptStyleSheet.borderCurve,
+            adaptStyleSheet.textAlignVertical,
+          ].filter(Boolean)
+        : [styleSheet.borderCurve];
+
+      if (isAnimatedStyleActive) {
+        return [animatedContainerStyle, ...baseStyles, style];
+      }
+      return [...baseStyles, style];
+    }, [
+      isAdaptUI,
+      isAnimatedStyleActive,
+      animatedContainerStyle,
+      style,
+      needsBorderCurve,
+    ]);
 
     const handleFocus = (e: FocusEvent) => {
       handleFocusAnimation();
@@ -211,14 +331,27 @@ const TextFieldDescription = forwardRef<TextRef, TextFieldDescriptionProps>(
       ...restProps
     } = props;
 
-    const { isInvalid: contextIsInvalid } = useTextField();
+    const context = useTextField();
+    const { isDisabled, isInvalid: contextIsInvalid } = context;
+    const isAdaptUI = context.designSystem === 'adapt';
+    const size = isAdaptUI ? context.size : undefined;
 
     const isInvalid =
       localIsInvalid !== undefined ? localIsInvalid : contextIsInvalid;
 
-    const tvStyles = textFieldStyles.description({
-      className,
-    });
+    // Compute description styles based on design system
+    const tvStyles = useMemo(() => {
+      if (isAdaptUI) {
+        return adaptTextFieldStyles.description({
+          size,
+          isDisabled,
+          className,
+        });
+      }
+      return textFieldStyles.description({
+        className,
+      });
+    }, [isAdaptUI, size, isDisabled, className]);
 
     const { entering, exiting } = useTextFieldDescriptionAnimation({
       animation,
@@ -244,15 +377,26 @@ const TextFieldDescription = forwardRef<TextRef, TextFieldDescriptionProps>(
 
 const TextFieldErrorMessage = forwardRef<TextRef, TextFieldErrorMessageProps>(
   (props, ref) => {
-    const { isInvalid: contextIsInvalid } = useTextField();
+    const context = useTextField();
+    const { isInvalid: contextIsInvalid } = context;
+    const isAdaptUI = context.designSystem === 'adapt';
+
     const { className, isInvalid: localIsInvalid, ...restProps } = props;
 
     const isInvalid =
       localIsInvalid !== undefined ? localIsInvalid : contextIsInvalid;
 
-    const tvStyles = textFieldStyles.errorMessage({
-      className,
-    });
+    // Compute error message styles based on design system
+    const tvStyles = useMemo(() => {
+      if (isAdaptUI) {
+        return adaptTextFieldStyles.errorMessage({
+          className,
+        });
+      }
+      return textFieldStyles.errorMessage({
+        className,
+      });
+    }, [isAdaptUI, className]);
 
     return (
       <ErrorView

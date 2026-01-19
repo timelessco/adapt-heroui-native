@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { AnimationRootDisableAll } from '../../helpers/types/animation';
+import type { DesignSystem } from '../design-system/types';
 import type { TextComponentContextValue } from '../text-component/types';
 import type { ToastProviderProps } from '../toast/types';
 
@@ -14,6 +15,15 @@ import type { ToastProviderProps } from '../toast/types';
  * Additional configuration options can be added in future versions.
  */
 export interface HeroUINativeConfig extends TextComponentContextValue {
+  /**
+   * Design system to use for all components
+   *
+   * @description
+   * Set to 'adapt' to use AdaptUI design system globally.
+   * Individual components can still override via prop.
+   * @default 'heroui'
+   */
+  designSystem?: DesignSystem;
   /**
    * Global animation configuration
    *
