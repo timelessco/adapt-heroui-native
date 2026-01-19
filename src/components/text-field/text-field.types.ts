@@ -10,8 +10,24 @@ import type {
   AnimationRootDisableAll,
   AnimationValue,
 } from '../../helpers/types/animation';
+import type { DesignSystem } from '../../providers/design-system/types';
 import type { ErrorViewRootProps } from '../error-view';
+import type { AdaptLabelSlots } from './text-field.adapt-styles';
 import type { LabelSlots } from './text-field.styles';
+
+/**
+ * AdaptUI TextField appearance variants
+ */
+export type AdaptTextFieldAppearance =
+  | 'outline'
+  | 'subtle'
+  | 'underline'
+  | 'ghost';
+
+/**
+ * AdaptUI TextField size variants
+ */
+export type AdaptTextFieldSize = 'sm' | 'md' | 'lg' | 'xl';
 
 /**
  * Animation configuration for TextField Label component
@@ -130,6 +146,21 @@ export interface TextFieldRootProps extends ViewProps {
    */
   children?: React.ReactNode;
   /**
+   * Design system to use for this component
+   * @default undefined - uses context value (falls back to 'heroui')
+   */
+  designSystem?: DesignSystem;
+  /**
+   * Visual appearance of the input (AdaptUI only)
+   * @default 'outline'
+   */
+  appearance?: AdaptTextFieldAppearance;
+  /**
+   * Size variant of the input (AdaptUI only)
+   * @default 'md'
+   */
+  size?: AdaptTextFieldSize;
+  /**
    * Whether the entire text field is disabled
    * @default false
    */
@@ -177,7 +208,7 @@ export interface TextFieldLabelProps
   /**
    * Additional CSS classes for different parts of the label
    */
-  classNames?: ElementSlots<LabelSlots>;
+  classNames?: ElementSlots<LabelSlots> | ElementSlots<AdaptLabelSlots>;
   /**
    * Animation configuration for label
    * - `false` or `"disabled"`: Disable all animations
@@ -275,9 +306,9 @@ export interface TextFieldDescriptionProps
 export interface TextFieldErrorMessageProps extends ErrorViewRootProps {}
 
 /**
- * Context value for the TextField component
+ * Base context value for the TextField component
  */
-export interface TextFieldContextValue {
+interface TextFieldBaseContextValue {
   /**
    * Whether the entire text field is disabled
    */
@@ -292,3 +323,39 @@ export interface TextFieldContextValue {
    */
   isRequired: boolean;
 }
+
+/**
+ * HeroUI-specific context value for the TextField component
+ */
+export interface HeroUITextFieldContextValue extends TextFieldBaseContextValue {
+  /**
+   * Design system identifier
+   */
+  designSystem: 'heroui';
+}
+
+/**
+ * AdaptUI-specific context value for the TextField component
+ */
+export interface AdaptUITextFieldContextValue
+  extends TextFieldBaseContextValue {
+  /**
+   * Design system identifier
+   */
+  designSystem: 'adapt';
+  /**
+   * Visual appearance of the input
+   */
+  appearance: AdaptTextFieldAppearance;
+  /**
+   * Size variant of the input
+   */
+  size: AdaptTextFieldSize;
+}
+
+/**
+ * Union context value for the TextField component
+ */
+export type TextFieldContextValue =
+  | HeroUITextFieldContextValue
+  | AdaptUITextFieldContextValue;

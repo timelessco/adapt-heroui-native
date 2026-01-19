@@ -166,7 +166,11 @@ export default function Layout() {
         />
         <Stack.Screen
           name="adapt-components/button"
-          options={{ title: 'Button (AdaptUI)' }}
+          options={{ title: 'adapt/button' }}
+        />
+        <Stack.Screen
+          name="adapt-components/text-field"
+          options={{ title: 'adapt/text-field' }}
         />
         <Stack.Screen
           name="showcases"

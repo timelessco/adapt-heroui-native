@@ -23,6 +23,10 @@ const components: Component[] = [
     title: 'Button',
     path: 'button',
   },
+  {
+    title: 'TextField',
+    path: 'text-field',
+  },
 ];
 
 export default function AdaptComponentsIndex() {

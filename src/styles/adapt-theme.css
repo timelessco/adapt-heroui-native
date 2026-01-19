@@ -338,4 +338,93 @@
   --color-adapt-focus-secondary: var(--color-adapt-secondary-500);
   --color-adapt-focus-success: var(--color-adapt-success-500);
   --color-adapt-focus-danger: var(--color-adapt-danger-500);
+
+  /* ============================================
+   * INPUT TOKENS
+   * ============================================ */
+
+  /* Focus Ring */
+  --color-adapt-input-focus-ring: var(--color-adapt-base-500); /* #C7C7C7 */
+
+  /* Input Outline Appearance
+   * - Default: white bg, #E2E2E2 border
+   * - Hover: white bg, #C7C7C7 border
+   * - Focus: white bg, #E2E2E2 border, #C7C7C7 focus ring (3px)
+   * - Disabled: #F3F3F3 bg, #E2E2E2 border
+   * - Error: white bg, #F9C6C6 border
+   */
+  --color-adapt-input-outline-bg: #FFFFFF;
+  --color-adapt-input-outline-bg-hover: #FFFFFF;
+  --color-adapt-input-outline-bg-focus: #FFFFFF;
+  --color-adapt-input-outline-bg-disabled: var(--color-adapt-base-100);
+  --color-adapt-input-outline-bg-error: #FFFFFF;
+  --color-adapt-input-outline-border: var(--color-adapt-base-400); /* #E2E2E2 */
+  --color-adapt-input-outline-border-hover: var(--color-adapt-base-500); /* #C7C7C7 */
+  --color-adapt-input-outline-border-focus: var(--color-adapt-base-400); /* #E2E2E2 - same as default */
+  --color-adapt-input-outline-border-disabled: var(--color-adapt-base-400);
+  --color-adapt-input-outline-border-error: var(--color-adapt-danger-400); /* #F9C6C6 */
+
+  /* Input Subtle Appearance
+   * - Default: #F3F3F3 bg, no border
+   * - Hover: #EDEDED bg, no border
+   * - Focus: WHITE bg, #C7C7C7 focus ring (3px)
+   * - Disabled: #F3F3F3 bg, no border
+   * - Error: #FFEFEF bg (pink), no border
+   */
+  --color-adapt-input-subtle-bg: var(--color-adapt-base-100); /* #F3F3F3 */
+  --color-adapt-input-subtle-bg-hover: var(--color-adapt-base-200); /* #EDEDED */
+  --color-adapt-input-subtle-bg-focus: #FFFFFF;
+  --color-adapt-input-subtle-bg-disabled: var(--color-adapt-base-100);
+  --color-adapt-input-subtle-bg-error: var(--color-adapt-danger-100); /* #FFEFEF */
+
+  /* Input Underline Appearance
+   * - Default: transparent, #E2E2E2 bottom border
+   * - Focus: transparent, #707070 bottom border (darker)
+   * - Disabled: transparent, #E2E2E2 bottom border
+   * - Error: transparent, #EB9091 bottom border
+   * Note: No focus ring for underline
+   */
+  --color-adapt-input-underline-border: var(--color-adapt-base-400); /* #E2E2E2 */
+  --color-adapt-input-underline-border-hover: var(--color-adapt-base-500); /* #C7C7C7 */
+  --color-adapt-input-underline-border-focus: var(--color-adapt-base-600); /* #707070 */
+  --color-adapt-input-underline-border-disabled: var(--color-adapt-base-400);
+  --color-adapt-input-underline-border-error: var(--color-adapt-danger-500); /* #EB9091 */
+
+  /* Input Ghost Appearance
+   * - Default: transparent, no border
+   * - Focus: #F3F3F3 bg, #C7C7C7 focus ring (3px)
+   * - Disabled: transparent, no border
+   * - Error: transparent, #E5484D red text/placeholder
+   */
+  --color-adapt-input-ghost-bg: transparent;
+  --color-adapt-input-ghost-bg-focus: var(--color-adapt-base-100); /* #F3F3F3 */
+  --color-adapt-input-ghost-bg-disabled: transparent;
+  --color-adapt-input-ghost-bg-error: transparent;
+
+  /* Input Text Colors
+   * - Placeholder: #707070 (does NOT change on focus)
+   * - Placeholder disabled: #C7C7C7
+   * - Ghost error placeholder: #E5484D (red)
+   * - Filled text (typed): #383838
+   */
+  --color-adapt-input-text-placeholder: var(--color-adapt-base-600); /* #707070 */
+  --color-adapt-input-text-placeholder-disabled: var(--color-adapt-base-500); /* #C7C7C7 */
+  --color-adapt-input-text-placeholder-ghost-error: var(--color-adapt-danger-600); /* #E5484D */
+  --color-adapt-input-text-filled: var(--color-adapt-base-800); /* #383838 */
+  --color-adapt-input-text-disabled: var(--color-adapt-base-500); /* #C7C7C7 */
+  --color-adapt-input-text-error: var(--color-adapt-danger-800);
+
+  /* Input Icon Colors */
+  --color-adapt-input-icon: var(--color-adapt-base-600);
+  --color-adapt-input-icon-disabled: var(--color-adapt-base-500);
+  --color-adapt-input-icon-error: var(--color-adapt-danger-800);
+
+  /* Input Label Colors */
+  --color-adapt-input-label: var(--color-adapt-base-800);
+  --color-adapt-input-label-disabled: var(--color-adapt-base-500);
+  --color-adapt-input-label-error: var(--color-adapt-danger-800);
+
+  /* Input Description/Helper Text Colors */
+  --color-adapt-input-description: var(--color-adapt-base-600);
+  --color-adapt-input-description-disabled: var(--color-adapt-base-500);
 }
